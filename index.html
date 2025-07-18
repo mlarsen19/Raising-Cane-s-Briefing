@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transforming Raising Cane’s Supply Chain</title>
+    <!-- Chosen Palette: Warm Neutrals & Subtle Accent (Stone, Charcoal, Muted Red) -->
+    <!-- Application Structure Plan: The SPA is designed as a strategic narrative for an executive audience, specifically the Chief of Supply Chain. It abandons the linear report format for a more persuasive, interactive flow: 1. Hero section with headline stats to establish scale and urgency. 2. An interactive 'Priorities' section where the user can explore the key challenges, making it feel personalized. 3. A 'Solution Hub' with tabbed navigation, allowing deep dives into the five core Databricks value propositions, each with its own visualization. This breaks down complex solutions into digestible, engaging pieces. 4. A 'Peer Examples' section using tabs to build credibility and show industry precedent. 5. A clear 'Path Forward' section presenting potential POCs as actionable next steps. This structure guides the user from problem to solution to action, which is far more effective for decision-making than a static document. -->
+    <!-- Visualization & Content Choices: The application uses a mix of interactive elements to explain complex ideas simply. Report Info -> Goal -> Viz/Presentation -> Interaction -> Justification. | Key Growth Stats -> Inform/Impress -> Large stat cards (HTML/Tailwind) -> Hover effects -> Immediately shows scale. | Kelby's Priorities -> Organize/Engage -> Clickable cards revealing text -> Personalized exploration of pain points. | Demand Forecasting -> Show Improvement -> Dual Line Chart (Chart.js) -> Hover for data -> Visually proves AI's value over status quo. | Supplier Risk -> Compare States -> Bar Chart + Toggle (Chart.js) -> Button updates chart data -> Makes 'predictive alerts' a tangible concept. | Control Tower -> Explain Architecture -> Diagram (HTML/CSS) -> Hover for info -> Simplifies a complex system visually. | Waste Reduction -> Show Proportions -> Donut Chart (Chart.js) -> Click to update text -> Connects data to a specific solution. | TCO Reduction -> Compare -> Before/After diagrams (HTML/CSS) -> Button toggles views -> Clearly shows simplification. | Peer Examples -> Organize/Inform -> Tabbed Interface -> Click to switch content -> Presents case studies without clutter. | High-Impact Use Cases -> Propose -> Styled info cards -> Hover effects -> Presents next steps as appealing options. All interactions are powered by vanilla JS and Chart.js, using Canvas for all visualizations. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .tab-active { border-color: #DC2626; color: #DC2626; background-color: #FEF2F2; }
+        .tab-inactive { border-color: transparent; color: #374151; }
+        .section-fade-in { animation: fadeIn 0.8s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .chart-container { position: relative; width: 100%; max-width: 800px; margin-left: auto; margin-right: auto; height: 350px; max-height: 400px; }
+        @media (min-width: 768px) { .chart-container { height: 400px; } }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800">
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+        <!-- Header Section -->
+        <header class="text-center mb-16">
+            <h1 class="text-4xl md:text-5xl font-bold text-stone-900">Transforming Raising Cane’s Supply Chain</h1>
+            <p class="mt-4 text-lg md:text-xl text-stone-600 max-w-3xl mx-auto">A strategic proposal for leveraging Data & AI to power future growth, resilience, and efficiency.</p>
+        </header>
+
+        <!-- Stats Section -->
+        <section class="mb-20">
+            <h2 class="text-3xl font-bold text-center mb-2 text-stone-900">Growth at an Unprecedented Scale</h2>
+            <p class="text-center text-stone-600 mb-8 max-w-2xl mx-auto">Raising Cane's explosive growth creates immense pressure on its supply chain. The sheer volume and pace of expansion demand a more intelligent, data-driven approach to maintain the "One Love" quality promise.</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                <div class="bg-white p-6 rounded-xl shadow-md border border-stone-200 transition-transform transform hover:scale-105">
+                    <p class="text-4xl font-bold text-red-700">$6.2M</p>
+                    <p class="mt-2 text-stone-600">Average Unit Volume<br>(~2.3x Industry Average)</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md border border-stone-200 transition-transform transform hover:scale-105">
+                    <p class="text-4xl font-bold text-red-700">+17.5%</p>
+                    <p class="mt-2 text-stone-600">Same-Store Sales Growth<br>(H1 2024)</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md border border-stone-200 transition-transform transform hover:scale-105">
+                    <p class="text-4xl font-bold text-red-700">800+</p>
+                    <p class="mt-2 text-stone-600">Restaurants & Growing<br>(100+ new stores a year)</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kelby's Priorities Section -->
+        <section class="mb-20">
+            <h2 class="text-3xl font-bold text-center mb-2 text-stone-900">The Modern Supply Chain Challenge</h2>
+            <p class="text-center text-stone-600 mb-8 max-w-3xl mx-auto">From our analysis, these are the key priorities and challenges likely facing the Chief of Supply Chain. A modern data strategy must directly address these pain points to deliver tangible business value. Click on a card to learn more.</p>
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <div class="lg:col-span-4">
+                    <div id="priorities-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4"></div>
+                </div>
+                <div class="lg:col-span-8 bg-white p-8 rounded-xl shadow-md border border-stone-200 min-h-[300px]">
+                    <div id="priority-content-display">
+                        <h3 id="priority-title" class="text-2xl font-bold text-stone-900 mb-4"></h3>
+                        <p id="priority-text" class="text-stone-700 leading-relaxed"></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Solution Hub Section -->
+        <section id="solutions" class="mb-20">
+            <h2 class="text-3xl font-bold text-center mb-2 text-stone-900">The Lakehouse + GenAI Solution</h2>
+            <p class="text-center text-stone-600 mb-8 max-w-3xl mx-auto">Databricks provides a unified Data & AI platform to turn these challenges into competitive advantages. This is not just about new technology; it’s about driving better business outcomes—from reducing waste to preventing stock-outs. Explore how we can help.</p>
+            <div class="flex justify-center border-b border-stone-300 mb-8">
+                <div id="solution-tabs" class="flex flex-wrap justify-center -mb-px"></div>
+            </div>
+            <div id="solution-content-area" class="section-fade-in"></div>
+        </section>
+        
+        <!-- Peer Examples Section -->
+        <section class="mb-20">
+            <h2 class="text-3xl font-bold text-center mb-2 text-stone-900">Proven Success in the Industry</h2>
+            <p class="text-center text-stone-600 mb-8 max-w-3xl mx-auto">Leading fast-casual and QSR brands are already leveraging Data & AI to optimize their operations. Cane's can leapfrog the competition by adopting these proven strategies on a modern, unified platform.</p>
+             <div class="flex flex-col md:flex-row gap-8">
+                <div id="peer-tabs" class="flex md:flex-col md:w-1/4"></div>
+                <div id="peer-content" class="md:w-3/4 bg-white p-8 rounded-xl shadow-md border border-stone-200 section-fade-in"></div>
+            </div>
+        </section>
+
+        <!-- Path Forward Section -->
+        <section>
+            <h2 class="text-3xl font-bold text-center mb-2 text-stone-900">Your Path to a Data-Driven Future</h2>
+             <p class="text-center text-stone-600 mb-10 max-w-3xl mx-auto">We propose a collaborative partnership to turn these ideas into reality. The journey starts with a focused proof of concept designed to deliver a tangible win and build a business case for a broader transformation. Here are some high-impact use cases we could explore together.</p>
+            <div id="use-cases-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        </section>
+        
+    </main>
+    
+    <footer class="text-center py-8 bg-stone-100 border-t border-stone-200">
+        <p class="text-stone-500">Executive Briefing for Raising Cane's</p>
+    </footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    // --- DATA STORE ---
+
+    const prioritiesData = [
+        { id: 'continuity', title: 'Supply Continuity & Resilience', text: "With a single primary product, any disruption in the supply of chicken, sauce, or packaging can shut down restaurants. The key is to anticipate risks like weather, supplier outages, or avian flu in real time and have agile contingency plans ready. Building resilience through predictive insights is a top priority." },
+        { id: 'scaling', title: 'Scaling Efficiently with Growth', text: "Opening over 100 new restaurants a year requires rapidly scaling the entire supply chain. This involves optimizing distribution logistics, ensuring supplier capacity, and controlling costs through data-driven negotiations and price audits to protect margins during expansion." },
+        { id: 'forecasting', title: 'Demand Forecasting & Inventory', text: "A simple menu doesn't mean simple forecasting. Ensuring each of the 800+ restaurants has the right amount of product to meet sky-high demand—without overstocking (waste) or understocking (lost sales)—is a critical challenge, especially as historical sales patterns shift." },
+        { id: 'quality', title: 'Supplier Performance & Quality', text: "The Cane's brand is built on quality ingredients. This requires closely tracking the performance of over 100 suppliers for on-time delivery, fill rates, and quality metrics. The goal is to proactively identify and resolve issues before they impact the customer." },
+        { id: 'cost', title: 'Cost Pressure & Efficiency', text: "Rising food, labor, and transport costs put constant pressure on the supply chain. Finding efficiencies through better demand planning, optimized logistics, or smarter procurement is essential for protecting profitability." },
+        { id: 'sustainability', title: 'Sustainability & Waste Reduction', text: "Balancing the higher costs of sustainable packaging with consumer demand is a key consideration. Reducing food and packaging waste is a dual-win, supporting both sustainability goals and cost-saving initiatives." },
+    ];
+
+    const solutionsData = {
+        forecasting: {
+            title: 'Demand Forecasting & Inventory Optimization',
+            icon: '📊',
+            description: "Go from static weekly ordering to dynamic, AI-driven demand forecasting. By unifying POS, weather, and event data, we can create hyper-accurate forecasts for every single store, updated in near real-time. This drastically reduces waste from over-ordering and prevents lost sales from stock-outs.",
+            vizType: 'line',
+            content: `
+                <p class="text-center text-stone-600 mb-6">The chart below simulates the difference between traditional forecasting methods and an AI-powered model. The AI model adapts to real-world demand fluctuations, leading to optimized inventory, fresher product, and significant cost savings.</p>
+                <div class="chart-container"><canvas id="forecastingChart"></canvas></div>
+            `
+        },
+        supplier: {
+            title: 'Supplier Performance & Risk Management',
+            icon: '🛡️',
+            description: "Move from reactive problem-solving to proactive risk mitigation. We unify all supplier data—delivery records, quality reports, contract terms—to create real-time performance scorecards. ML models can then predict potential disruptions before they happen, giving you time to act.",
+            vizType: 'bar',
+            content: `
+                <p class="text-center text-stone-600 mb-4">This supplier scorecard shows on-time delivery performance. With standard reporting, issues are only visible after they occur. Use the toggle to see how predictive alerts provide an early warning on at-risk suppliers, enabling proactive intervention.</p>
+                <div class="text-center mb-4"><button id="predictive-toggle" class="bg-red-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-700 transition">Enable Predictive Alerts</button></div>
+                <div class="chart-container"><canvas id="supplierChart"></canvas></div>
+            `
+        },
+        control: {
+            title: 'End-to-End Supply Chain Control Tower',
+            icon: '🗼',
+            description: "Create a single source of truth for your entire supply chain. Our Lakehouse platform acts as a unifying 'control tower,' bringing together siloed data from POS, inventory, logistics, and more into one holistic, live view. A GenAI assistant can answer natural language questions, making insights accessible to everyone.",
+            vizType: 'diagram',
+            content: `
+                <p class="text-center text-stone-600 mb-6">This diagram illustrates how a unified Lakehouse architecture breaks down data silos. Instead of fragmented systems, all data flows into a central platform, powering a real-time control tower dashboard and enabling agile, informed decision-making across the entire operation.</p>
+                <div class="w-full max-w-3xl mx-auto p-4">
+                    <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                        <div class="grid grid-cols-2 gap-4 text-center">
+                            <div class="bg-blue-100 p-4 rounded-lg border border-blue-300"><strong>POS Sales Data</strong></div>
+                            <div class="bg-blue-100 p-4 rounded-lg border border-blue-300"><strong>ArrowStream Data</strong></div>
+                            <div class="bg-blue-100 p-4 rounded-lg border border-blue-300"><strong>Weather & Events</strong></div>
+                            <div class="bg-blue-100 p-4 rounded-lg border border-blue-300"><strong>Logistics Feeds</strong></div>
+                        </div>
+                        <div class="text-5xl font-thin text-stone-400 mx-6">&rarr;</div>
+                        <div class="bg-red-100 p-8 rounded-xl border border-red-300 text-center">
+                            <h4 class="font-bold text-lg text-red-800">Databricks Lakehouse</h4>
+                            <p class="text-red-700">Unified Data Core</p>
+                        </div>
+                        <div class="text-5xl font-thin text-stone-400 mx-6">&rarr;</div>
+                         <div class="bg-green-100 p-8 rounded-xl border border-green-300 text-center">
+                            <h4 class="font-bold text-lg text-green-800">Supply Chain Control Tower</h4>
+                            <p class="text-green-700">Real-Time Dashboards & GenAI Assistant</p>
+                        </div>
+                    </div>
+                </div>
+            `
+        },
+        waste: {
+            title: 'Waste Reduction & Freshness Assurance',
+            icon: '🌿',
+            description: "Turn waste into profit. By tracking waste at a granular level and correlating it with ordering data, AI models can recommend precise adjustments to inventory and prep schedules for each restaurant. This not only improves margins but also ensures customers always receive the freshest product.",
+            vizType: 'doughnut',
+            content: `
+                <p class="text-center text-stone-600 mb-6">This chart shows typical sources of food waste in a restaurant environment. Click on a segment to see how data-driven insights can help mitigate that specific type of waste.</p>
+                <div class="flex flex-col md:flex-row items-center gap-8">
+                    <div class="md:w-1/2 chart-container h-80 md:h-96"><canvas id="wasteChart"></canvas></div>
+                    <div id="waste-explanation" class="md:w-1/2 text-left p-6 bg-stone-100 rounded-lg">
+                        <h4 id="waste-title" class="font-bold text-lg mb-2">Select a Waste Source</h4>
+                        <p id="waste-text">Each source of waste represents an opportunity for optimization. AI-powered analytics can pinpoint the root causes and recommend targeted solutions, from adjusting order quantities to optimizing prep schedules.</p>
+                    </div>
+                </div>
+            `
+        },
+        tco: {
+            title: 'Unified Platform & Lower TCO',
+            icon: '⚙️',
+            description: "Simplify your data architecture and reduce long-term IT costs. The Lakehouse consolidates disparate tools and data silos onto a single, scalable platform. This reduces maintenance overhead, eliminates data duplication, and future-proofs Cane's analytics capabilities for new challenges like IoT and advanced AI.",
+             vizType: 'diagram',
+            content: `
+                 <p class="text-center text-stone-600 mb-6">This illustrates the architectural simplification a Lakehouse provides. Moving from complex, siloed systems to a unified platform reduces total cost of ownership (TCO) and dramatically accelerates time-to-insight.</p>
+                 <div class="w-full max-w-4xl mx-auto p-4 grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                    <div class="border border-stone-300 rounded-lg p-6 bg-white">
+                        <h4 class="font-bold text-lg text-center mb-4">Before: Siloed Systems</h4>
+                        <div class="text-center text-sm space-y-2">
+                             <div class="bg-stone-200 p-3 rounded">ArrowStream</div>
+                             <div class="font-bold text-stone-400">&harr;</div>
+                             <div class="bg-stone-200 p-3 rounded">Manual Excel/Access</div>
+                             <div class="font-bold text-stone-400">&harr;</div>
+                             <div class="bg-stone-200 p-3 rounded">POS System</div>
+                             <p class="text-stone-500 pt-2">Complex, slow, manual data integration</p>
+                        </div>
+                    </div>
+                    <div class="border-2 border-red-500 rounded-lg p-6 bg-red-50">
+                        <h4 class="font-bold text-lg text-center mb-4 text-red-800">After: Unified Lakehouse</h4>
+                        <div class="text-center text-sm space-y-2">
+                             <div class="bg-stone-200 p-3 rounded">All Data Sources</div>
+                             <div class="font-bold text-red-500">&darr;</div>
+                             <div class="bg-red-200 p-3 rounded font-semibold text-red-900">Databricks Lakehouse</div>
+                             <div class="font-bold text-red-500">&darr;</div>
+                             <div class="bg-stone-200 p-3 rounded">BI, AI Models, GenAI Apps</div>
+                             <p class="text-red-600 pt-2">Simple, fast, automated insights</p>
+                        </div>
+                    </div>
+                </div>`
+        }
+    };
+
+    const peerData = {
+        chipotle: { name: "Chipotle", icon: "🌯", text: "As Kelby's alma mater, Chipotle set a high bar. They use a cloud data stack with Databricks for predictive demand forecasting and real-time inventory optimization. This allows them to reduce food waste, improve margins, and react instantly to the success of new menu items. The key takeaway is that data-driven supply chain management is already a proven model in fast-casual." },
+        chickfila: { name: "Chick-fil-A", icon: "🐔", text: "Known for operational excellence, Chick-fil-A leverages advanced analytics to support its massive scale. They use data to optimize everything from inventory levels to drive-thru management. Their ability to maintain industry-leading sales with minimal disruptions is a testament to a data-informed supply chain. The message: the best in the business run on data." },
+        dominos: { name: "Domino's", icon: "🍕", text: "Domino's operates like a tech company that sells pizza. They use Databricks and GenAI to analyze massive volumes of unstructured customer feedback in real-time to improve service. This showcases the power of applying AI to restaurant operations. If GenAI can parse millions of pizza comments, it can certainly parse supply chain data to spot issues faster." },
+        rbi: { name: "RBI (Popeyes)", icon: "👑", text: "Restaurant Brands International, parent of Popeyes and Burger King, adopted the Databricks Lakehouse to unify data across its global brands. This broke down data silos and enabled advanced analytics on sales and supply data at a massive scale. It proves the Lakehouse model works for complex, franchise-heavy organizations." },
+    };
+
+    const useCasesData = [
+        { title: 'AI Demand Forecasting Pilot', description: "Demonstrate improved forecast accuracy for a test region, showing tangible reductions in stock-outs and waste." },
+        { title: 'Supply Chain GenAI "Copilot"', description: "Build a prototype chatbot that answers natural language questions about supply chain status, providing instant insights." },
+        { title: 'Supplier Risk Predictor', description: "Train a model to predict late or short deliveries, turning reactive expediting into proactive risk management." },
+    ];
+    
+    let currentChart = null;
+
+    // --- RENDER FUNCTIONS ---
+    
+    function renderPriorities() {
+        const grid = document.getElementById('priorities-grid');
+        grid.innerHTML = '';
+        prioritiesData.forEach((p, index) => {
+            const card = document.createElement('div');
+            card.className = `p-4 rounded-lg cursor-pointer border-2 transition ${index === 0 ? 'priority-active bg-white' : 'priority-inactive bg-stone-50 hover:bg-stone-100'}`;
+            card.innerHTML = `<h4 class="font-semibold text-stone-800">${p.title}</h4>`;
+            card.dataset.id = p.id;
+            card.addEventListener('click', () => selectPriority(p.id));
+            grid.appendChild(card);
+        });
+    }
+
+    function selectPriority(id) {
+        const selected = prioritiesData.find(p => p.id === id);
+        document.getElementById('priority-title').textContent = selected.title;
+        document.getElementById('priority-text').textContent = selected.text;
+        
+        document.querySelectorAll('#priorities-grid > div').forEach(card => {
+            if (card.dataset.id === id) {
+                card.className = 'p-4 rounded-lg cursor-pointer border-2 transition priority-active bg-white';
+            } else {
+                card.className = 'p-4 rounded-lg cursor-pointer border-2 transition priority-inactive bg-stone-50 hover:bg-stone-100';
+            }
+        });
+        document.getElementById('priority-content-display').classList.remove('section-fade-in');
+        void document.getElementById('priority-content-display').offsetWidth; 
+        document.getElementById('priority-content-display').classList.add('section-fade-in');
+    }
+
+    function renderSolutionTabs() {
+        const tabsContainer = document.getElementById('solution-tabs');
+        Object.keys(solutionsData).forEach((key, index) => {
+            const solution = solutionsData[key];
+            const tab = document.createElement('button');
+            tab.className = `px-4 py-3 font-semibold border-b-4 transition text-sm sm:text-base ${index === 0 ? 'tab-active' : 'tab-inactive'}`;
+            tab.innerHTML = `<span class="mr-2">${solution.icon}</span>${solution.title}`;
+            tab.dataset.key = key;
+            tab.addEventListener('click', () => selectSolution(key));
+            tabsContainer.appendChild(tab);
+        });
+    }
+
+    function selectSolution(key) {
+        document.querySelectorAll('#solution-tabs button').forEach(tab => {
+            tab.className = `px-4 py-3 font-semibold border-b-4 transition text-sm sm:text-base ${tab.dataset.key === key ? 'tab-active' : 'tab-inactive'}`;
+        });
+
+        const contentArea = document.getElementById('solution-content-area');
+        const solution = solutionsData[key];
+        contentArea.innerHTML = `
+            <p class="text-center text-stone-600 mb-8 max-w-3xl mx-auto text-lg">${solution.description}</p>
+            ${solution.content}
+        `;
+        
+        contentArea.classList.remove('section-fade-in');
+        void contentArea.offsetWidth;
+        contentArea.classList.add('section-fade-in');
+
+        if (currentChart) {
+            currentChart.destroy();
+        }
+
+        if (solution.vizType === 'line') createForecastingChart();
+        if (solution.vizType === 'bar') createSupplierChart();
+        if (solution.vizType === 'doughnut') createWasteChart();
+    }
+
+    function renderPeerTabs() {
+        const tabsContainer = document.getElementById('peer-tabs');
+        Object.keys(peerData).forEach((key, index) => {
+            const peer = peerData[key];
+            const tab = document.createElement('button');
+            tab.className = `w-full text-left px-4 py-3 font-semibold rounded-lg transition ${index === 0 ? 'bg-red-600 text-white' : 'hover:bg-stone-100'}`;
+            tab.innerHTML = `<span class="mr-3 text-xl">${peer.icon}</span>${peer.name}`;
+            tab.dataset.key = key;
+            tab.addEventListener('click', () => selectPeer(key));
+            tabsContainer.appendChild(tab);
+        });
+    }
+    
+    function selectPeer(key) {
+        document.querySelectorAll('#peer-tabs button').forEach(tab => {
+             tab.className = `w-full text-left px-4 py-3 font-semibold rounded-lg transition ${tab.dataset.key === key ? 'bg-red-600 text-white' : 'hover:bg-stone-100'}`;
+        });
+        const peer = peerData[key];
+        const contentArea = document.getElementById('peer-content');
+        contentArea.innerHTML = `<p class="text-stone-700 leading-relaxed text-lg">${peer.text}</p>`;
+        contentArea.classList.remove('section-fade-in');
+        void contentArea.offsetWidth;
+        contentArea.classList.add('section-fade-in');
+    }
+
+    function renderUseCases() {
+        const grid = document.getElementById('use-cases-grid');
+        useCasesData.forEach(uc => {
+            const card = document.createElement('div');
+            card.className = 'bg-white p-6 rounded-xl shadow-md border border-stone-200 hover:shadow-lg hover:border-red-400 transition';
+            card.innerHTML = `
+                <h4 class="font-bold text-xl text-stone-900 mb-2">${uc.title}</h4>
+                <p class="text-stone-600">${uc.description}</p>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    // --- CHART CREATION ---
+    
+    const chartLabelWrapper = (label) => {
+        const limit = 16;
+        if (label.length <= limit) return label;
+        const words = label.split(' ');
+        const lines = [];
+        let currentLine = '';
+        words.forEach(word => {
+            if ((currentLine + ' ' + word).length > limit) {
+                lines.push(currentLine.trim());
+                currentLine = word;
+            } else {
+                currentLine += ' ' + word;
+            }
+        });
+        lines.push(currentLine.trim());
+        return lines;
+    };
+
+    function createForecastingChart() {
+        const ctx = document.getElementById('forecastingChart').getContext('2d');
+        const labels = ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6', 'Week 7', 'Week 8'];
+        currentChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Actual Demand',
+                        data: [100, 110, 105, 125, 130, 120, 115, 140],
+                        borderColor: '#16A34A',
+                        backgroundColor: '#16A34A',
+                        borderWidth: 3,
+                        tension: 0.1
+                    },
+                    {
+                        label: 'Traditional Forecast',
+                        data: [95, 98, 102, 105, 108, 110, 112, 115],
+                        borderColor: '#6B7280',
+                        backgroundColor: '#6B7280',
+                        borderDash: [5, 5],
+                        borderWidth: 2,
+                        tension: 0.1
+                    },
+                    {
+                        label: 'AI-Powered Forecast',
+                        data: [101, 109, 106, 123, 129, 121, 116, 138],
+                        borderColor: '#DC2626',
+                        backgroundColor: '#DC2626',
+                        borderWidth: 3,
+                        tension: 0.1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        callbacks: {
+                             title: (tooltipItems) => 'Demand for ' + tooltipItems[0].label
+                        }
+                    }
+                },
+                scales: { y: { beginAtZero: true, title: { display: true, text: 'Units Sold (in thousands)' } } }
+            }
+        });
+    }
+
+    function createSupplierChart() {
+        const ctx = document.getElementById('supplierChart').getContext('2d');
+        const initialData = {
+            labels: ['Supplier A', 'Supplier B (Poultry)', 'Supplier C (Packaging)', 'Supplier D', 'Supplier E (Sauce)'],
+            datasets: [{
+                label: 'On-Time Delivery %',
+                data: [98, 95, 82, 99, 91],
+                backgroundColor: ['#16A34A', '#16A34A', '#EF4444', '#16A34A', '#16A34A'],
+            }]
+        };
+        currentChart = new Chart(ctx, {
+            type: 'bar',
+            data: initialData,
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: (context) => ` ${context.dataset.label}: ${context.raw}%`
+                        }
+                    }
+                },
+                scales: { x: { beginAtZero: true, max: 100, title: { display: true, text: 'On-Time Delivery Rate (%)' } } }
+            }
+        });
+
+        document.getElementById('predictive-toggle').addEventListener('click', function() {
+            const isPredicted = this.textContent.includes('Enable');
+            this.textContent = isPredicted ? 'Disable Predictive Alerts' : 'Enable Predictive Alerts';
+            this.classList.toggle('bg-gray-500');
+            this.classList.toggle('hover:bg-gray-600');
+            this.classList.toggle('bg-red-600');
+            this.classList.toggle('hover:bg-red-700');
+            
+            const predictedData = [98, 88, 82, 99, 85];
+            const predictedColors = ['#16A34A', '#FBBF24', '#EF4444', '#16A34A', '#FBBF24'];
+            currentChart.data.datasets[0].data = isPredicted ? predictedData : initialData.datasets[0].data;
+            currentChart.data.datasets[0].backgroundColor = isPredicted ? predictedColors : initialData.datasets[0].backgroundColor;
+            currentChart.update();
+        });
+    }
+    
+    function createWasteChart() {
+        const ctx = document.getElementById('wasteChart').getContext('2d');
+        const wasteChartData = {
+            labels: ['Prep Waste', 'Unsold Cooked Product', 'Expired Ingredients', 'Packaging'],
+            datasets: [{
+                data: [35, 40, 15, 10],
+                backgroundColor: ['#DC2626', '#F59E0B', '#1D4ED8', '#6B7280'],
+            }]
+        };
+
+        const wasteExplanationData = {
+           'Prep Waste': { title: "Optimizing Prep Waste", text: "AI can analyze sales patterns to recommend more precise prep amounts, reducing waste from over-prepping raw ingredients like chicken during slow periods."},
+           'Unsold Cooked Product': { title: "Reducing End-of-Day Surplus", text: "By forecasting late-night demand more accurately, models can help managers adjust cooking schedules in the final hours, minimizing the amount of perfectly good food that goes unsold."},
+           'Expired Ingredients': { title: "Smarter Inventory Rotation", text: "A unified inventory system provides total visibility, flagging items nearing their expiration date and ensuring a first-in, first-out (FIFO) policy is automatically tracked and enforced."},
+           'Packaging': { title: "Rightsizing Packaging Orders", text: "Connecting packaging inventory to actual sales velocity ensures that orders are rightsized, preventing overstock of packaging materials that can lead to waste."},
+        };
+
+        currentChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: wasteChartData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' },
+                },
+                onClick: (evt, elements) => {
+                    if (elements.length > 0) {
+                        const index = elements[0].index;
+                        const label = wasteChartData.labels[index];
+                        const explanation = wasteExplanationData[label];
+                        document.getElementById('waste-title').textContent = explanation.title;
+                        document.getElementById('waste-text').textContent = explanation.text;
+                    }
+                }
+            }
+        });
+    }
+
+
+    // --- INITIALIZATION ---
+
+    function init() {
+        // Priorities Section
+        renderPriorities();
+        selectPriority('continuity');
+
+        // Solutions Section
+        renderSolutionTabs();
+        selectSolution('forecasting');
+        
+        // Peers Section
+        renderPeerTabs();
+        selectPeer('chipotle');
+
+        // Use Cases Section
+        renderUseCases();
+    }
+    
+    init();
+
+});
+</script>
+</body>
+</html>
